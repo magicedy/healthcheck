@@ -19,7 +19,7 @@ RUN xargo build --release --target=x86_64-unknown-linux-gnu && \
 RUN strip /app/healthcheck && \
     upx --lzma --best /app/healthcheck
 
-FROM gcr.io/distroless/static-debian12:noroot
+FROM gcr.io/distroless/static-debian12:nonroot
 COPY --from=builder /app/healthcheck /healthcheck
 USER 1000:1000
 ENTRYPOINT ["/healthcheck"]
