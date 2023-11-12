@@ -9,7 +9,7 @@ RUN apt-get update && \
     upx && \
     apt-get autoremove -q -y && \
     apt-get clean -q -y && \
-    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /var/lib/apt/lists/*
 RUN rustup component add rust-src
 WORKDIR /app
 COPY . .
