@@ -11,7 +11,7 @@ RUN apt-get update && \
     apt-get clean -q -y && \
     rm -rf /var/lib/apt/lists/* && \
     cargo install xargo && \
-    rustup component add rust-src \
+    rustup component add rust-src
 WORKDIR /app
 COPY . .
 RUN xargo build --release --target=x86_64-unknown-linux-gnu && \
