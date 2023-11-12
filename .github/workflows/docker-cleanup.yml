@@ -1,0 +1,30 @@
+name: Cleanup Old Docker Images
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - "closed"
+
+jobs:
+  cleanup-images:
+    name: Cleanup Stale Images Tags
+    runs-on: ubuntu-latest
+    env:
+      # Requires a personal access token with the OAuth scope delete:packages
+      TOKEN: ${{ secrets.PACKAGE_DELETE_TOKEN }}
+      REPO_NAME: ${{ github.event.repository.name }}
+    steps:
+      -
+        name: Clean temporary images
+        if: "${{ env.TOKEN != '' }}"
+        uses: stumpylog/image-cleaner-action/ephemeral@v0.3.0
+        with:
+          token: "${{ env.TOKEN }}"
+          owner: ${{ github.repository_owner }}
+          is_org: "false"
+          do_delete: "true"
+          package_name: ${{ env.REPO_NAME  }}
+          scheme: "pull_request"
+          repo_name: ${{ env.REPO_NAME }}
+          match_regex: '^pr-(\d+)$|^(\d+)$'
