@@ -10,12 +10,11 @@ RUN apt-get update && \
     apt-get autoremove -q -y && \
     apt-get clean -q -y && \
     rm -rf /var/lib/apt/lists/* && \
-    cargo install xargo && \
-    rustup component add rust-src
+RUN rustup component add rust-src
 WORKDIR /app
 COPY . .
-RUN xargo build --release --target=x86_64-unknown-linux-gnu && \
-    mv /app/target/x86_64-unknown-linux-gnu/release/healthcheck  /app/healthcheck
+RUN cargo +nightly build -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort --target=x86_64-unknown-linux-musl --release && \
+    mv /app/target/x86_64-unknown-linux-musl/release/healthcheck  /app/healthcheck
 RUN strip /app/healthcheck && \
     upx --lzma --best /app/healthcheck
 
