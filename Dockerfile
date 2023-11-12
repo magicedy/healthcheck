@@ -1,16 +1,8 @@
 FROM rustlang/rust:nightly as builder
-RUN apt-get update && \
-    apt-get install -q -y --no-install-recommends \
-    nasm \
-    binutils \
-    grub-common \
-    xorriso \
-    grub-pc-bin \
-    upx && \
-    apt-get autoremove -q -y && \
-    apt-get clean -q -y && \
-    rm -rf /var/lib/apt/lists/*
-RUN rustup component add rust-src
+RUN rustup target add x86_64-unknown-linux-musl && \
+    rustup component add rust-src --toolchain nightly-x86_64-unknown-linux-gnu
+RUN apt update && apt install -y musl-tools musl-dev
+RUN update-ca-certificates
 WORKDIR /app
 COPY . .
 RUN cargo +nightly build -Z build-std=std,panic_abort -Z build-std-features=panic_immediate_abort --target=x86_64-unknown-linux-musl --release && \
